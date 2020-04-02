@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> website </title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <div class="center">
+        <h1> Welcome to tic-tac-toe </h1>
+        Computer : <computer id="computerSymbol"> </computer><br>
+        Player : <player id="playerSymbol"> </player>
+        <br>
+        <toss id="toss"> </toss><br>
+        <Win id="win"> </Win>
+        <button class="test" id="0 0"> </button> <button class="test" id="0 1"> </button> <button class="test" id="0 2"> </button><br>
+        <button class="test" id="1 0"> </button> <button class="test" id="1 1"> </button> <button class="test" id="1 2"> </button><br>
+        <button class="test" id="2 0"> </button> <button class="test" id="2 1"> </button> <button class="test" id="2 2"> </button><br>
+        <error id="error"> </error>
+    </div>
+    <script type="text/javascript">
+    var buttons = document.querySelectorAll('.test');
+    for (var a = 0; a < buttons.length; a++) {
+        buttons[a].addEventListener('click', function demo() {
+            fillBlock(this.id.substring(0, 1), this.id.substring(2, 3), player);
+        });
+    }
+
+    var symbol = (Math.floor(Math.random() * 10) % 2);
+    var toss = (Math.floor(Math.random() * 10) % 2);
+    var board = new Array(3);
+    for (row = 0; row < board.length; row++) {
+        board[row] = [];
+    }
+
+    var row;
+    var column;
+    var computer;
+    var playCount = 0;
+    var turnPlay = false;
+    var player;
+    var NO_OF_ROWS = 3;
+    var NO_OF_COLUMNS = 3;
+    var TOTALCOUNT = 9;
+
+    var O = 0;
+    var X = 1;
+
+    function resetBoard() {
+        for (row = 0; row < NO_OF_ROWS; row++) {
+            for (column = 0; column < NO_OF_COLUMNS; column++) {
+                board[row][column] = " ";
+            }
+        }
+    }
+
+    function displayBoard() {
+        // var NO_OF_COLUMNS = 9;
+        for (row = 0; row < NO_OF_ROWS; row++) {
+            for (column = 0; column < NO_OF_COLUMNS; column++) {
+                document.getElementById(row + " " + column).innerHTML = board[row][column];
+            }
+        }
+    }
+
+    function assignLetter() {
+        if (symbol == X) {
+            computer = "O"
+            player = "X"
+        } else {
+            computer = "X"
+            player = "O"
+        }
+        document.getElementById("computerSymbol").innerHTML = computer;
+        document.getElementById("playerSymbol").innerHTML = player;
+    }
+
+    function tossfunction() {
+        if (toss == X)
+            return player
+        return computer
+    }
+
+    function computerTurn() {
+        turnPlay = false;
+        if (turnPlay == false)
+            winOrBlock(computer);
+        if (turnPlay == false)
+            winOrBlock(player);
+        while (turnPlay == false) {
+            row = (Math.floor(Math.random() * 10) % 3);
+            column = (Math.floor(Math.random() * 10) % 3);
+            fillBlock(row, column, computer);
+        }
+    }
+
+    function winOrBlock(playing) {
+        row = 0;
+        column = 0;
+        position = 0;
+        possibleWins = [" " + playing + playing, playing + " " + playing, playing + playing + " "];
+
+        // CHECKING FOR VERTICAL WIN
+        while (column < NO_OF_COLUMNS) {
+            for (position = 0; position < 3; position++) {
+                if (possibleWins[position] == board[row][column] + board[row + 1][column] + board[row + 2][column]) {
+                    fillBlock(row + position, column, computer);
+                    return;
+                }
+            }
+            column++;
+        }
+
+        row = 0
+        column = 0
+        // CHECKING FOR HORIZONTAL WIN
+        while (row < NO_OF_COLUMNS) {
+            for (position = 0; position < 3; position++) {
+                if (possibleWins[position] == board[row][column] + board[row][column + 1] + board[row][column + 2]) {
+                    fillBlock(row, column + position, computer);
+                    return;
+                }
+            }
+            row++;
+        }
+
+        row = 0;
+        column = 0;
+        // CHECKING FOR DIAGONAL 1 WIN
+        for (position = 0; position < 3; position++) {
+            if (possibleWins[position] == board[row][column] + board[row + 1][column + 1] + board[row + 2][column + 2]) {
+                fillBlock(row + position, column + position, computer);
+                return;
+            }
+        }
+
+        row = 0;
+        column = column + 2;
+        // CHECKING FOR DIAGONAL 2 WIN
+        for (position = 0; position < 3; position++) {
+            if (possibleWins[position] == board[row][column] + board[row + 1][column - 1] + board[row + 2][column - 2]) {
+                fillBlock(row + position, column - position, computer);
+                return;
+            }
+        }
+    }
+
+    function exit(status) {
+        // debugger;
+        var i;
+
+        if (typeof status === 'string') {
+            alert(status);
+        }
+
+        window.addEventListener('error', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }, false);
+
+        var handlers = [
+            'copy', 'cut', 'paste',
+            'beforeunload', 'blur', 'change', 'click', 'contextmenu', 'dblclick', 'focus', 'keydown', 'keypress', 'keyup', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'resize', 'scroll',
+            'DOMNodeInserted', 'DOMNodeRemoved', 'DOMNodeRemovedFromDocument', 'DOMNodeInsertedIntoDocument', 'DOMAttrModified', 'DOMCharacterDataModified', 'DOMElementNameChanged', 'DOMAttributeNameChanged', 'DOMActivate', 'DOMFocusIn', 'DOMFocusOut', 'online', 'offline', 'textInput',
+            'abort', 'close', 'dragdrop', 'load', 'paint', 'reset', 'select', 'submit', 'unload'
+        ];
+
+        function stopPropagation(e) {
+            e.stopPropagation();
+            // e.preventDefault(); // Stop for the form controls, etc., too?
+        }
+        for (i = 0; i < handlers.length; i++) {
+            window.addEventListener(handlers[i], function(e) { stopPropagation(e); }, true);
+        }
+
+        if (window.stop) {
+            window.stop();
+        }
+
+        throw '';
+    }
+
+    function fillBlock(row, column, playing) {
+        document.getElementById("error").innerHTML = " ";
+        if (isEmpty(row, column) == true) {
+            board[row][column] = playing;
+            displayBoard();
+            playCount++;
+            turnPlay = true;
+            if (checkWin(playing) == true) {
+                document.getElementById("error").innerHTML = playing + " won!";
+                exit();
+            }
+            if (playing == player)
+                computerTurn();
+        } else
+            document.getElementById("error").innerHTML = "Already occupied";
+        if (playCount == TOTALCOUNT) {
+            document.getElementById("error").innerHTML = "Match Tie";
+            exit();
+        }
+    }
+
+    function isEmpty(row, column) {
+        console.log("blcok value : " + document.getElementById(row + " " + column).innerHTML);
+        if (document.getElementById(row + " " + column).innerHTML == " ")
+            return true;
+        return false;
+    }
+
+    function checkWin(playing) {
+        row = 0
+        column = 0
+
+        // CHECKING IF WON VERTICALLY
+        while (column < NO_OF_COLUMNS) {
+            if (board[row][column] + board[row + 1][column] + board[row + 2][column] == playing + playing + playing)
+                return true;
+            column++;
+        }
+
+        row = 0
+        column = 0
+        // CHECKING IF WON HORIZONTALLY
+        while (row < NO_OF_COLUMNS) {
+            if (board[row][column] + board[row][column + 1] + board[row][column + 2] == playing + playing + playing)
+                return true;
+            row++;
+        }
+
+        row = 0
+        column = 0
+        // CHECKING IF WON DIAGONALLY
+        if (board[row][column] + board[row + 1][column + 1] + board[row + 2][column + 2] == playing + playing + playing)
+            return true;
+
+        row = 0
+        column = column + 2;
+        // CHECKING IF WON DIAGONALLY
+        if (board[row][column] + board[row + 1][column - 1] + board[row + 2][column - 2] == playing + playing + playing)
+            return true;
+        return false;
+    }
+
+    assignLetter();
+    resetBoard();
+    displayBoard();
+
+    if (tossfunction() == player) {
+        document.getElementById("toss").innerHTML = "You Won Toss";
+        displayBoard();
+    } else {
+        document.getElementById("toss").innerHTML = "Computer Won Toss";
+        displayBoard();
+        computerTurn();
+    }
+    </script>
+</body>
+
+</html>
